@@ -5,7 +5,6 @@ But :
     - Télécharger le contenu de chaque article
     - Stocker chaque article dans un fichier JSON unique
 
-Auteur : PTH + ChatGPT
 Date : 2025-08-02
 """
 

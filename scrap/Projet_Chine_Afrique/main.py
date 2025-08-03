@@ -6,7 +6,6 @@ But :
   - Sauvegarder le contenu dans un fichier JSON
   - Éviter de retraiter les liens déjà visités
 
-Auteur : PTH
 Date : 2025-07-28 (modifié le 2025-08-02)
 """
 

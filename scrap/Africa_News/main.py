@@ -4,7 +4,6 @@ But :
     Scraper les articles du flux RSS Africanews (https://fr.africanews.com/feed/rss?themes=news)
     Télécharger les articles et les sauvegarder dans un fichier JSON.
 
-Auteur : PTH
 Date : 2025-08-02
 """
 

@@ -4,7 +4,6 @@ But :
     Lire le flux RSS de Mondafrique, télécharger les articles
     et les stocker dans un JSON (avec 3 tentatives en cas d'erreur)
 
-Auteur : PTH
 Date : 2025-07-31
 """
 

@@ -4,7 +4,6 @@ But :
     Lire plusieurs flux RSS AllAfrica, télécharger les articles
     et les enregistrer dans un JSON au lieu de PDF
 
-Auteur : PTH
 Date : 2025-08-02
 """
 

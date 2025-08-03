@@ -4,7 +4,6 @@ But :
     Lire le flux RSS BBC Afrique, télécharger les articles
     et les sauvegarder dans un JSON.
 
-Auteur : PTH (modifié par ChatGPT)
 Date : 2025-08-02
 """
 

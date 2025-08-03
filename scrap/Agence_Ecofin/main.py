@@ -4,7 +4,6 @@ But :
     Lire plusieurs flux RSS d'Agence Ecofin, télécharger les articles
     et les enregistrer dans un JSON au lieu de PDF
 
-Auteur : PTH (modifié par ChatGPT)
 Date : 2025-08-02
 """
 

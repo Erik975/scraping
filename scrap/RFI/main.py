@@ -3,6 +3,8 @@ Script : RFI/main.py
 But :
     Lire un flux RSS de RFI, télécharger les articles
     et les enregistrer dans un fichier JSON sans effacer les anciens
+
+Date : 2025-07-28
 """
 
 import re

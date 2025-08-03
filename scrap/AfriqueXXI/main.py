@@ -4,7 +4,6 @@ But :
     Lire un flux RSS d'afriquexxi.com, télécharger les articles
     et les exporter dans un JSON au fur et à mesure
 
-Auteur : PTH
 Date : 2025-07-29
 """
 

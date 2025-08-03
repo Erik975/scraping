@@ -6,7 +6,6 @@ But :
   - Enregistrer les transcriptions dans un fichier JSON
   - Éviter de retraiter les vidéos déjà traitées
 
-Auteur : PTH
 Date : 2025-07-28
 """
 

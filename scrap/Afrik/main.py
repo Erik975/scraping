@@ -4,7 +4,6 @@ But :
     Lire un flux RSS d'Afrik.com, télécharger les articles
     et les enregistrer dans un fichier JSON unique
 
-Auteur : PTH (modifié par ChatGPT)
 Date : 2025-07-29
 """
 
