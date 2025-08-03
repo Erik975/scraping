@@ -149,7 +149,7 @@ def scrape_article_content(link):
                 article_data = {
                     "scraping_status": "scraped",
                     "link": link,
-                    "provider": "Projet Afrique Chine",
+                    "provider": "Projet_Chine_Afrique",
                     "titre": title,
                     "date": scraping_date,  # ⚠️ Pas de date de publication sur le site → on met la date scraping
                     "scraping_date": scraping_date,

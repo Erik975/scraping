@@ -63,7 +63,7 @@ def load_progress():
     return 0
 
 if __name__ == "__main__":
-    base_dir = "/home/user/Documents/scrap/"
+    base_dir = "scrap/"
     scrap_dirs = [
         "Journal_Afrique_FR24",
         "RFI",
@@ -94,7 +94,7 @@ if __name__ == "__main__":
             save_progress(i + 1)'''
 
     # Fusion des JSON à la fin
-    merge_all_json(base_dir, scrap_dirs, "/home/user/Documents/synthese/data.json")
+    merge_all_json(base_dir, scrap_dirs, "/home/user/Documents/synthese/data.json") # MODIFIER LE CHEMIN !
 
     # Suppression du fichier de progression
     if os.path.exists(PROGRESS_FILE):

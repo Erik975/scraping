@@ -130,7 +130,7 @@ def main():
                     data["articles"].append({
                         "scraping_status": "scraped",
                         "link": f"https://www.youtube.com/watch?v={video_id}",
-                        "provider": "Journal Afrique FR24",
+                        "provider": "Journal_Afrique_FR24",
                         "titre": video_title if video_title else "Titre inconnu",
                         "date": scraping_date,
                         "scraping_date": scraping_date,

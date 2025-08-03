@@ -3,6 +3,7 @@ import re
 import html
 import os
 from datetime import datetime
+from dateutil import parser
 
 INPUT_FILE = "../synthese/data.json"   # ⚠️ Fais une sauvegarde avant de lancer
 OUTPUT_FILE = INPUT_FILE               # Écrase le même fichier
@@ -10,13 +11,14 @@ OUTPUT_FILE = INPUT_FILE               # Écrase le même fichier
 # ─────────────────────────────
 # 🔵 1. Normalisation de la date
 # ─────────────────────────────
+
 def convert_date(date_str):
     """
-    Convertit une date du format 'Fri, 01 Aug 2025 17:16:50 GMT' en '2025-08-01'.
-    Si erreur, renvoie la date d'origine.
+    Convertit une date du format RFC 2822 (ex: 'Sat, 02 Aug 2025 16:53:16 +0200')
+    en 'YYYY-MM-DD'. Si erreur, renvoie la date d'origine.
     """
     try:
-        dt = datetime.strptime(date_str, "%a, %d %b %Y %H:%M:%S %Z")
+        dt = parser.parse(date_str)
         return dt.strftime("%Y-%m-%d")
     except Exception:
         return date_str

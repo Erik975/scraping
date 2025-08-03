@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 # 📂 Chemin vers ton fichier JSON original
-INPUT_FILE = Path("/home/user/Documents/synthese/data.json")
+INPUT_FILE = Path("../synthese/data.json")
 OUTPUT_FILE = INPUT_FILE
 
 # 🏷️ Critère pour identifier les doublons : "titre" ou "link"
@@ -21,20 +21,26 @@ def remove_duplicates():
     unique_articles = []
     duplicates_count = 0
 
-    for article in articles:
+    for idx, article in enumerate(articles, start=1):
         key_value = article.get(KEY, "").strip()
+        if not key_value:
+            print(f"⚠️ Article #{idx} sans clé '{KEY}', ignoré des doublons.")
+            unique_articles.append(article)
+            continue
+
         if key_value not in seen:
             seen.add(key_value)
             unique_articles.append(article)
         else:
             duplicates_count += 1
+            print(f"❌ Doublon supprimé #{duplicates_count} - Clé '{KEY}': {key_value}")
 
     # 3️⃣ Réécrire le JSON propre
     cleaned_data = {"articles": unique_articles}
     with OUTPUT_FILE.open("w", encoding="utf-8") as f:
         json.dump(cleaned_data, f, indent=4, ensure_ascii=False)
 
-    print(f"✅ Nettoyage terminé.")
+    print(f"\n✅ Nettoyage terminé.")
     print(f"   ➡️ Articles avant : {len(articles)}")
     print(f"   ➡️ Articles après : {len(unique_articles)}")
     print(f"   ➡️ Doublons supprimés : {duplicates_count}")
