@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Veille Presse</title>
+  <style>
+    /* --- Reset & base --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #f9fafb, #f1f5f9);
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+    }
+    body.loaded {
+      opacity: 1;
+    }
+
+    /* --- Header style Apple --- */
+    header {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: saturate(180%) blur(20px);
+      color: #1e293b;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.4);
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 2.4rem;
+      letter-spacing: 1.2px;
+      user-select: none;
+    }
+
+    /* --- Main --- */
+    main {
+      flex-grow: 1;
+      max-width: 900px;
+      margin: 2.5rem auto 4rem;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    /* --- Search Input --- */
+    .search-container {
+      margin-bottom: 2.5rem;
+      text-align: center;
+      animation: fadeSlide 1.2s ease forwards;
+    }
+    .search-container input {
+      width: 100%;
+      max-width: 420px;
+      padding: 0.75rem 1.2rem;
+      font-size: 1rem;
+      border: 1.8px solid #cbd5e1;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(12px);
+      color: #334155;
+      box-shadow: 0 2px 12px rgba(203, 213, 225, 0.25);
+      transition: all 0.3s ease;
+    }
+    .search-container input::placeholder {
+      color: #94a3b8;
+      font-style: italic;
+    }
+    .search-container input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+      background-color: rgba(255,255,255,0.85);
+      transform: scale(1.02);
+    }
+
+    /* --- Liste des sources --- */
+    ul.press-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1.8rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+    ul.press-list li {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(16px);
+      border-radius: 18px;
+      box-shadow: 0 8px 20px rgba(99, 115, 129, 0.12);
+      transition: transform 0.35s cubic-bezier(0.4, 0.2, 0.2, 1), box-shadow 0.35s ease;
+      padding: 1.4rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: cardReveal 0.7s ease forwards;
+    }
+    ul.press-list li:nth-child(odd) { animation-delay: 0.1s; }
+    ul.press-list li:nth-child(even) { animation-delay: 0.2s; }
+    ul.press-list li:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 14px 32px rgba(37, 99, 235, 0.25);
+    }
+    ul.press-list li a {
+      text-decoration: none;
+      color: #1e293b;
+      font-weight: 600;
+      font-size: 1.15rem;
+      text-align: center;
+      width: 100%;
+      display: block;
+      padding: 0.4rem 0;
+      transition: color 0.25s ease;
+    }
+    ul.press-list li a:hover {
+      color: #2563eb;
+    }
+
+    /* --- Bouton Voir tout --- */
+    #toggleSources {
+      display: block;
+      margin: 1rem auto 3rem;
+      padding: 0.8rem 2.4rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid #2563eb;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.7);
+      color: #2563eb;
+      transition: all 0.35s ease;
+      box-shadow: 0 3px 12px rgba(37, 99, 235, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    #toggleSources:hover {
+      background-color: #2563eb;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+    }
+    #toggleSources::after {
+      content: "";
+      position: absolute;
+      width: 180%;
+      height: 200%;
+      top: -50%;
+      left: -40%;
+      background: radial-gradient(circle, rgba(255,255,255,0.35) 10%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    #toggleSources:hover::after {
+      opacity: 1;
+      animation: halo 1.5s infinite alternate;
+    }
+
+    /* --- Chart Container --- */
+    .chart-wrapper {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(14px);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 16px 40px rgba(99, 115, 129, 0.1);
+      margin: 0 auto 4rem;
+      border: 1px solid rgba(255,255,255,0.5);
+      animation: fadeSlide 1.4s ease forwards;
+    }
+
+    #globalChart {
+      max-width: 100%;
+      height: 420px !important;
+      display: block;
+      margin: 0 auto;
+    }
+
+    h2.chart-title {
+      text-align: center;
+      color: #1e293b;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.4rem;
+      font-size: 0.9rem;
+      color: #64748b;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,255,255,0.4);
+    }
+
+    /* --- Animations --- */
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes cardReveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes halo {
+      0% { transform: scale(1); opacity: 0.5; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="title">Veille Presse Afrique</h1>
+  </header>
+
+  <main>
+    <div class="search-container">
+      <input type="search" id="searchInput" placeholder="Rechercher une source..." aria-label="Rechercher une source" />
+    </div>
+
+    <ul class="press-list" id="pressList">
+      <li><a href="details.html?site=Africa_Intelligence" data-name="Africa Intelligence">Africa Intelligence</a></li>
+      <li><a href="details.html?site=Journal_Afrique_FR24" data-name="Journal Afrique FR24">Journal Afrique FR24</a></li>
+      <li><a href="details.html?site=Projet_Chine_Afrique" data-name="Projet Chine Afrique">Projet Chine Afrique</a></li>
+      <li><a href="details.html?site=RFI" data-name="RFI">RFI</a></li>
+      <li><a href="details.html?site=Jeune_Afrique" data-name="Jeune Afrique">Jeune Afrique</a></li>
+      <li><a href="details.html?site=Afrik" data-name="Afrik">Afrik</a></li>
+      <li><a href="details.html?site=AfriqueXXI" data-name="Afrique XXI">Afrique XXI</a></li>
+      <li><a href="details.html?site=Agence_Ecofin" data-name="Agence Ecofin">Agence Ecofin</a></li>
+      <li><a href="details.html?site=allAfrica" data-name="allAfrica">allAfrica</a></li>
+      <li><a href="details.html?site=BBC_Afrique" data-name="BBC Afrique">BBC Afrique</a></li>
+      <li><a href="details.html?site=SIKA_Finance" data-name="SIKA Finance">SIKA Finance</a></li>
+      <li><a href="details.html?site=Africa_News" data-name="Africa News">Africa News</a></li>
+      <li><a href="details.html?site=Mondafrique" data-name="Mondafrique">Mondafrique</a></li>
+    </ul>
+
+    <button id="toggleSources" aria-expanded="false" aria-controls="pressList">Voir tout</button>
+
+    <h2 class="chart-title">Nombres d'articles par sources</h2>
+
+    <div class="chart-wrapper">
+      <canvas id="globalChart" aria-label="Nombre total d'articles par site" role="img"></canvas>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Veille Presse Afrique — Tous droits réservés
+  </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // --- Fade-in ---
+  window.addEventListener("load", () => {
+    document.body.classList.add("loaded");
+  });
+
+  // --- Typing effect ---
+  const titleEl = document.getElementById("title");
+  const text = "Veille Presse Afrique";
+  let index = 0;
+  titleEl.textContent = "";
+  function typeEffect() {
+    if (index < text.length) {
+      titleEl.textContent += text.charAt(index);
+      index++;
+      setTimeout(typeEffect, 80);
+    }
+  }
+  typeEffect();
+
+  // --- Recherche en direct ---
+  const searchInput = document.getElementById("searchInput");
+  const pressList = document.getElementById("pressList");
+  const pressItems = pressList.getElementsByTagName("li");
+  searchInput.addEventListener("input", function() {
+    const filter = this.value.toLowerCase();
+    Array.from(pressItems).forEach(item => {
+      const link = item.querySelector("a");
+      const text = link.getAttribute("data-name").toLowerCase();
+      item.style.display = text.includes(filter) ? "" : "none";
+    });
+  });
+
+  // --- Bouton Voir tout ---
+  const toggleBtn = document.getElementById('toggleSources');
+  const pressListItems = Array.from(pressList.getElementsByTagName('li'));
+  const initialVisibleCount = 6;
+
+  function updateVisibleSources(showAll) {
+    pressListItems.forEach((item, index) => {
+      item.style.display = showAll || index < initialVisibleCount ? '' : 'none';
+    });
+    toggleBtn.setAttribute('aria-expanded', showAll);
+  }
+  updateVisibleSources(false);
+
+  toggleBtn.addEventListener('click', () => {
+    const isShowingAll = toggleBtn.textContent === 'Voir moins';
+    toggleBtn.textContent = isShowingAll ? 'Voir tout' : 'Voir moins';
+    updateVisibleSources(!isShowingAll);
+  });
+
+  // --- Chart.js ---
+  async function loadDataAndRenderChart() {
+    try {
+      const response = await fetch('data.json');
+      if (!response.ok) throw new Error('Erreur chargement data.json');
+      const data = await response.json();
+
+      // Comptage des articles par source
+      const counts = {};
+      data.articles.forEach(article => {
+        const provider = article.provider;
+        counts[provider] = (counts[provider] || 0) + 1;
+      });
+
+      const labels = Object.keys(counts).map(k => k.replace(/_/g, ' '));
+      const totals = Object.values(counts);
+
+      const ctx = document.getElementById('globalChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Nombre total d'articles",
+            data: totals,
+            backgroundColor: ctx => {
+              const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 400);
+              gradient.addColorStop(0, 'rgba(37, 99, 235, 0.85)');
+              gradient.addColorStop(1, 'rgba(37, 99, 235, 0.35)');
+              return gradient;
+            },
+            borderColor: 'rgba(37, 99, 235, 0.9)',
+            borderWidth: 1,
+            borderRadius: 12,
+            maxBarThickness: 36,
+            hoverBackgroundColor: 'rgba(37, 99, 235, 1)',
+          }]
+        },
+        options: {
+          responsive: true,
+          animation: { duration: 2500, easing: 'easeOutCubic' },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#2563eb',
+              titleColor: '#fff',
+              bodyColor: '#f0f0f0',
+              padding: 12,
+              cornerRadius: 8,
+              displayColors: false,
+              callbacks: { label: ctx => `Articles : ${ctx.parsed.y.toLocaleString()}` }
+            }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: '#2563eb' }, grid: { color: 'rgba(37, 99, 235, 0.1)' } },
+            x: { ticks: { color: '#2563eb', maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+          }
+        }
+      });
+
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  }
+
+  // On lance le chargement du graphique après que la page soit chargée
+  window.addEventListener('load', loadDataAndRenderChart);
+</script>
+
+
+</body>
+</html>
+
